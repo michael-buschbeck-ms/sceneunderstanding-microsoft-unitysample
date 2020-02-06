@@ -36,15 +36,15 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     ///     </item>
     ///     <item>
     ///         <term>{1}</term>
-    ///         <description>Identifier number (a small integer) of the underlying physical anchor.</description>
+    ///         <description>Identifier number (a small integer) of the underlying low-level anchor.</description>
     ///     </item>
     ///     <item>
     ///         <term>{2}</term>
-    ///         <description>Distance (in meters) between the WorldAnchor and its underlying physical anchor.</description>
+    ///         <description>Distance (in meters) between the WorldAnchor and its underlying low-level anchor.</description>
     ///     </item>
     /// </list>
     /// </summary>
-    [Tooltip("Text format for the original label text and anchor diagnostics: {0} = initial label, {1} = physical anchor number, {2} = distance from physical anchor")]
+    [Tooltip("Text format for the original label text and anchor diagnostics: {0} = initial label, {1} = low-level anchor number, {2} = distance from low-level anchor")]
     public string TextFormat = "{0} (A{1} {2:f1}m)";
 
     /// <summary>
@@ -54,9 +54,9 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     public float UpdateInterval = 10.0f;
 
     /// <summary>
-    /// Minimum change in distance to physical anchor origin to prompt an update of the label text.
+    /// Minimum change in distance to low-level anchor origin to prompt an update of the label text.
     /// </summary>
-    [Tooltip("Minimum change (in meters) of the distance to the physical anchor that will prompt an update of the label text.")]
+    [Tooltip("Minimum change (in meters) of the distance to the low-level anchor that will prompt an update of the label text.")]
     public float UpdateDistanceThreshold = 0.05f;
 
 #if WINDOWS_UWP
@@ -66,12 +66,12 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     private string initialText;
 
     /// <summary>
-    /// Most recently rendered value of the friendly physical anchor identifier.
+    /// Most recently rendered value of the friendly low-level anchor identifier.
     /// </summary>
     private int lastSpatialNodeFriendlyId = -1;
     
     /// <summary>
-    /// Most recently rendered value of the WorldAnchor's distance from the underlying physical anchor.
+    /// Most recently rendered value of the WorldAnchor's distance from the underlying low-level anchor.
     /// </summary>
     private float lastSpatialAnchorDistance = -1.0f;
 #endif

@@ -6,7 +6,7 @@ using UnityEngine.XR.WSA;
 public class WorldAnchorDiagnosticsManager
 {
     /// <summary>
-    /// Maps physical anchor identifiers to assigned friendly numeric anchor identifiers.
+    /// Maps low-level anchor identifiers to assigned friendly numeric anchor identifiers.
     /// </summary>
     private Dictionary<System.Guid, int> spatialNodeFriendlyIds = new Dictionary<System.Guid, int>();
 
@@ -52,10 +52,10 @@ public class WorldAnchorDiagnosticsManager
     }
 
     /// <summary>
-    /// Gets or creates a friendly numeric identifier for a given physical anchor.
+    /// Assigns a friendly numeric identifier to a low-level anchor.
     /// </summary>
-    /// <param name="spatialNodeId">Physical anchor identifier.</param>
-    /// <returns>Friendly numeric identifier (a small integer) unique to the physical anchor identifier.</returns>
+    /// <param name="spatialNodeId">Low-level anchor identifier.</param>
+    /// <returns>Friendly numeric identifier (a small integer) unique to the low-level anchor.</returns>
     public int GetSpatialNodeFriendlyId(System.Guid spatialNodeId)
     {
         int spatialNodeFriendlyId;
