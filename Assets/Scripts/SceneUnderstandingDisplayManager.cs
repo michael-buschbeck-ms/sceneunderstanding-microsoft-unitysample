@@ -143,6 +143,12 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
         private float _timeElapsedSinceLastAutoRefresh = 0f;
         private bool _pcDisplayStarted = false;
         private Guid _lastDisplayedSceneGuid;
+
+        /// <summary>
+        /// Used to display WorldAnchor diagnostics for each scene object.
+        /// </summary>
+        private WorldAnchorDiagnosticsManager worldAnchorDiagnosticsManager = new WorldAnchorDiagnosticsManager();
+
         /// <summary>
         /// Initialization.
         /// </summary>
@@ -414,6 +420,7 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
                 if (SUDataProvider.RunOnDevice)
                 {
                     soGO.AddComponent<UnityEngine.XR.WSA.WorldAnchor>();
+                    worldAnchorDiagnosticsManager.AttachLabel(soGO);
                 }
                 else
                 {
