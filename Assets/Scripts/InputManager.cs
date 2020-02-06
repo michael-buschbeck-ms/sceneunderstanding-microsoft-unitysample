@@ -133,6 +133,12 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
         [Tooltip("Enables the minimap mode. All scene objects are shrunk and rendered in front of the user.")]
         public string Keyword_MinimapOn = "minimap on";
 
+        [Tooltip("Disables scene watertightness and anchors all scene objects individually.")]
+        public string Keyword_WatertightOff = "watertight off";
+
+        [Tooltip("Enables scene watertightness.")]
+        public string Keyword_WatertightOn = "watertight on";
+
         [Tooltip("Saves the current Scene Understanding scene to disk.")]
         public string Keyword_SaveDataToDisk = "save data";
 
@@ -231,6 +237,8 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
                 Keyword_CompletelyInferredOn,
                 Keyword_MinimapOff,
                 Keyword_MinimapOn,
+                Keyword_WatertightOff,
+                Keyword_WatertightOn,
                 Keyword_SaveDataToDisk,
                 Keyword_StatusTextOff,
                 Keyword_StatusTextOn,
@@ -403,6 +411,14 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
 
                     SUDisplayManager.SceneRoot.SetActive(false);
                 }
+            }
+            else if (arg.Contains(Keyword_WatertightOff))
+            {
+                SUDisplayManager.SetWatertightScene(false);
+            }
+            else if (arg.Contains(Keyword_WatertightOn))
+            {
+                SUDisplayManager.SetWatertightScene(true);
             }
             else if (arg.Contains(Keyword_SaveDataToDisk))
             {

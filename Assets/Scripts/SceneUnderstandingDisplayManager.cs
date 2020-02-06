@@ -147,7 +147,17 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
         /// <summary>
         /// Used to display WorldAnchor diagnostics for each scene object.
         /// </summary>
-        private WorldAnchorDiagnosticsManager worldAnchorDiagnosticsManager = new WorldAnchorDiagnosticsManager();
+        private WorldAnchorDiagnosticsManager _worldAnchorDiagnosticsManager = new WorldAnchorDiagnosticsManager();
+
+        /// <summary>
+        /// Root GameObject that will be parent of watertight clones of all scene objects.
+        /// </summary>
+        private GameObject _watertightSceneRoot;
+
+        /// <summary>
+        /// Toggles whether the watertight scene or the individually anchored scene objects are shown.
+        /// </summary>
+        private bool _watertightSceneEnabled = false;
 
         /// <summary>
         /// Initialization.
@@ -166,6 +176,42 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
 
             // To ensure that the first update, as part of auto refresh, happens immediately.
             _timeElapsedSinceLastAutoRefresh = AutoRefreshIntervalInSeconds;
+
+            InitWatertightScene();
+        }
+
+        /// <summary>
+        /// Initialize the watertight scene variant.
+        /// </summary>
+        private void InitWatertightScene()
+        {
+            _watertightSceneRoot = GameObject.Instantiate(SceneRoot);
+            _watertightSceneRoot.AddComponent<LowLevelAnchor>();
+        }
+
+        /// <summary>
+        /// Shows or hides the watertight scene variant (and hides or shows, respectively, all
+        /// individually anchored scene objects correspondingly).
+        /// </summary>
+        public void SetWatertightScene(bool enable)
+        {
+            _watertightSceneEnabled = enable;
+
+            setRenderingEnabled(_watertightSceneRoot, enable);
+            setRenderingEnabled(SceneRoot, !enable);
+        }
+
+        /// <summary>
+        /// Enables or disables rendering of a GameObject and all of its children.
+        /// </summary>
+        /// <param name="go">GameObject to control the rendering of.</param>
+        /// <param name="enable">True to enable rendering, false to disable rendering.</param>
+        private void setRenderingEnabled(GameObject go, bool enable)
+        {
+            foreach (MeshRenderer renderer in go.GetComponentsInChildren<MeshRenderer>())
+            {
+                renderer.enabled = enable;
+            }
         }
 
         /// <summary>
@@ -256,10 +302,15 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
                 {
                     // This will destroy all game objects under root.
                     SUUtils.DestroyAllGameObjectsUnderParent(SceneRoot.transform);
+                    SUUtils.DestroyAllGameObjectsUnderParent(_watertightSceneRoot.transform);
 
                     // Return to account for the destruction of the game objects at the end of the frame.
                     yield return null;
-        
+
+                    // Attach the watertight scene root to the low-level anchor.
+                    LowLevelAnchor watertightSceneLowLevelAnchor = _watertightSceneRoot.GetComponent<LowLevelAnchor>();
+                    watertightSceneLowLevelAnchor.AttachToStaticNode(scene.OriginSpatialGraphNodeId);
+                    
                     // Retrieve the Scene to Unity world transform.
                     System.Numerics.Matrix4x4? sceneToUnityTransform = TransformUtils.GetSceneToUnityTransform(scene.OriginSpatialGraphNodeId, SUDataProvider.RunOnDevice);
                     if (sceneToUnityTransform != null)
@@ -415,12 +466,19 @@ namespace Microsoft.MixedReality.SceneUnderstanding.Samples.Unity
                     }
                 }
 
+                // Add an unanchored clone of the scene object to the watertight scene root.
+                GameObject soWatertightGO = GameObject.Instantiate(soGO, _watertightSceneRoot.transform);
+
+                // Show or hide scene object variants (and their text labels) per current settings.
+                setRenderingEnabled(soGO, !_watertightSceneEnabled);
+                setRenderingEnabled(soWatertightGO, _watertightSceneEnabled);
+
                 // When running on device, add a worldanchor component to keep the scene object aligned to the real world. 
                 // When running on PC, add a boxcollider component, that is used for the 'Focus' functionality (in CameraMovement.cs).
                 if (SUDataProvider.RunOnDevice)
                 {
                     soGO.AddComponent<UnityEngine.XR.WSA.WorldAnchor>();
-                    worldAnchorDiagnosticsManager.AttachLabel(soGO);
+                    _worldAnchorDiagnosticsManager.AttachLabel(soGO);
                 }
                 else
                 {
