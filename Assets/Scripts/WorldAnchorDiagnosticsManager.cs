@@ -8,7 +8,7 @@ public class WorldAnchorDiagnosticsManager
     /// <summary>
     /// Maps low-level anchor identifiers to assigned friendly numeric anchor identifiers.
     /// </summary>
-    private Dictionary<System.Guid, int> spatialNodeFriendlyIds = new Dictionary<System.Guid, int>();
+    private Dictionary<System.Guid, int> staticNodeFriendlyIds = new Dictionary<System.Guid, int>();
 
     /// <summary>
     /// Attaches WorldAnchor diagnostics to an existing TextMesh.
@@ -54,18 +54,18 @@ public class WorldAnchorDiagnosticsManager
     /// <summary>
     /// Assigns a friendly numeric identifier to a low-level anchor.
     /// </summary>
-    /// <param name="spatialNodeId">Low-level anchor identifier.</param>
+    /// <param name="staticNodeGuid">Low-level anchor identifier.</param>
     /// <returns>Friendly numeric identifier (a small integer) unique to the low-level anchor.</returns>
-    public int GetSpatialNodeFriendlyId(System.Guid spatialNodeId)
+    public int GetStaticNodeFriendlyId(System.Guid staticNodeGuid)
     {
         int spatialNodeFriendlyId;
 
-        if (!spatialNodeFriendlyIds.TryGetValue(spatialNodeId, out spatialNodeFriendlyId))
+        if (!staticNodeFriendlyIds.TryGetValue(staticNodeGuid, out spatialNodeFriendlyId))
         {
-            spatialNodeFriendlyId = spatialNodeFriendlyIds.Count + 1;
-            spatialNodeFriendlyIds.Add(spatialNodeId, spatialNodeFriendlyId);
+            spatialNodeFriendlyId = staticNodeFriendlyIds.Count + 1;
+            staticNodeFriendlyIds.Add(staticNodeGuid, spatialNodeFriendlyId);
         
-            Debug.unityLogger.Log(string.Format("SpatialNode {0} assigned friendly ID {1}", spatialNodeId, spatialNodeFriendlyId));
+            Debug.unityLogger.Log(string.Format("Assigned friendly ID {0} to static node {1}", spatialNodeFriendlyId, staticNodeGuid));
         }
 
         return spatialNodeFriendlyId;

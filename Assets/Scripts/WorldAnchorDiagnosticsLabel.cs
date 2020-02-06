@@ -68,12 +68,12 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     /// <summary>
     /// Most recently rendered value of the friendly low-level anchor identifier.
     /// </summary>
-    private int lastSpatialNodeFriendlyId = -1;
+    private int lastStaticNodeFriendlyId = -1;
     
     /// <summary>
-    /// Most recently rendered value of the WorldAnchor's distance from the underlying low-level anchor.
+    /// Most recently rendered value of the WorldAnchor's displacement from the underlying low-level anchor's origin.
     /// </summary>
-    private float lastSpatialAnchorDistance = -1.0f;
+    private float lastWorldAnchorDisplacement = -1.0f;
 #endif
 
     // Start is called before the first frame update
@@ -91,17 +91,17 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
         while (true)
         {
             SpatialAnchor spatialAnchor = Marshal.GetObjectForIUnknown(WorldAnchor.GetNativeSpatialAnchorPtr()) as SpatialAnchor;
-            SpatialGraphInteropFrameOfReferencePreview spatialFrameOfReference = SpatialGraphInteropPreview.TryCreateFrameOfReference(spatialAnchor.CoordinateSystem);
+            SpatialGraphInteropFrameOfReferencePreview worldAnchorFrameOfReference = SpatialGraphInteropPreview.TryCreateFrameOfReference(spatialAnchor.CoordinateSystem);
 
-            int spatialNodeFriendlyId = Manager.GetSpatialNodeFriendlyId(spatialFrameOfReference.NodeId);
-            float spatialAnchorDistance = spatialFrameOfReference.CoordinateSystemToNodeTransform.Translation.Length();
+            int staticNodeFriendlyId = Manager.GetStaticNodeFriendlyId(worldAnchorFrameOfReference.NodeId);
+            float worldAnchorDisplacement = worldAnchorFrameOfReference.CoordinateSystemToNodeTransform.Translation.Length();
 
-            if (spatialNodeFriendlyId != lastSpatialNodeFriendlyId || Math.Abs(spatialAnchorDistance - lastSpatialAnchorDistance) <= UpdateDistanceThreshold)
+            if (staticNodeFriendlyId != lastStaticNodeFriendlyId || Math.Abs(worldAnchorDisplacement - lastWorldAnchorDisplacement) <= UpdateDistanceThreshold)
             {
-                TextMesh.text = string.Format(TextFormat, initialText, spatialNodeFriendlyId, spatialAnchorDistance);
+                TextMesh.text = string.Format(TextFormat, initialText, staticNodeFriendlyId, worldAnchorDisplacement);
 
-                lastSpatialNodeFriendlyId = spatialNodeFriendlyId;
-                lastSpatialAnchorDistance = spatialAnchorDistance;
+                lastStaticNodeFriendlyId = staticNodeFriendlyId;
+                lastWorldAnchorDisplacement = worldAnchorDisplacement;
             }
 
             // Debug.unityLogger.Log(string.Format("[{0:yyyy-MM-dd HH:mm:ss.fff}] WorldAnchorDiagnosticsLabel updated TextMesh \"{1}\".", DateTime.Now, TextMesh.text));
