@@ -76,7 +76,9 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     private float lastWorldAnchorDisplacement = -1.0f;
 #endif
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initialization.
+    /// </summary>
     void Start()
     {
 #if WINDOWS_UWP
@@ -86,6 +88,9 @@ public class WorldAnchorDiagnosticsLabel : MonoBehaviour
     }
 
 #if WINDOWS_UWP
+    /// <summary>
+    /// Updates the diagnostics label in regular intervals.
+    /// </summary>
     private IEnumerator UpdateDiagnosticsContinuously()
     {
         while (true)
